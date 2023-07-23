@@ -215,12 +215,13 @@ import Card from "../components/Card.astro";
       setTimeout(() => {
         // Common styles.
         (el as HTMLElement).style.transition = "0.3s";
-        (el as HTMLElement).style.opacity = "1";
+        // (el as HTMLElement).style.opacity = "1";
         (el as HTMLElement).style.position = "fixed";
         (el as HTMLElement).style.top = `${
           viewHeight / 2 - coords.height / 2
         }px`;
-        const centerMlr = (window.innerWidth * 5) / 100;
+
+        const centerMlr = (window.innerWidth * 4) / 100;
 
         const per = (coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
         const scale = (per - 100) * -1 - (i * 100) / totalNodes!;
@@ -236,8 +237,9 @@ import Card from "../components/Card.astro";
         const rotationMlr =
           (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
         const isInitialSet = (i / totalNodes!) * 100 <= rotationMlr;
-        const baseRotate = isInitialSet ? 65 : 90;
+        const baseRotate = 65; //isInitialSet ? 65 : 90;
         (el as HTMLElement).style.scale = `${scale < 0 ? 0 : scale}%`;
+        (el as HTMLElement).style.opacity = `${isInitialSet ? 1 : 0}`;
 
         // Left and Right diffs (positive vs negative).
         if (i % 2 == 0) {
@@ -277,27 +279,22 @@ import Card from "../components/Card.astro";
               window.innerWidth /
               2) *
             100;
-      const centerMlr = (window.innerWidth * 5) / 100;
+      const centerMlr = (window.innerWidth * 4) / 100;
 
       const rotationMlr = (i / totalNodes!) * 100;
-	  console.log(rotationMlr)
+      console.log(rotationMlr);
       const rotationInitialSet =
         (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
       const isInitialSet = rotationMlr <= rotationInitialSet; // fixed threshold.
-	  const marginScrolled = scrolled + 5;
-	  const preBR = marginScrolled > rotationMlr;
-    
-    //   const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
+      const marginScrolled = scrolled + 5;
+      const preBR = marginScrolled > rotationMlr;
+
+      //   const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
       const baseRotate = 65;
-	  console.warn("new deg: ", baseRotate);
-	//     const willRotate = scrolled > per;
-    //   console.log(willRotate);
-    //     const baseRotate = !willRotate
-    //       ? 65 + (i / totalNodes!) * 100 < 90
-    //         ? 65 + (i / totalNodes!) * 100
-    //         : 90
-    //       : 65;
-	(el.node as HTMLElement).style.opacity = `${isInitialSet ? 1 : preBR ? 1 : (scrolled / 100) * 0.5}`;
+      console.warn("new deg: ", baseRotate);
+      (el.node as HTMLElement).style.opacity = `${
+        isInitialSet ? 1 : preBR ? 1 : (scrolled / 100) * 0.5
+      }`;
 
       (el.node as HTMLElement).style.scale = `${
         scale + scrolled < 0 ? 0 : scale + scrolled
@@ -307,7 +304,7 @@ import Card from "../components/Card.astro";
           viewHeight - 100
         }px) rotateY(${baseRotate}deg)`;
         (el.node as HTMLElement).style.translate = `${
-          t - centerMlr - scrolled
+          (t - centerMlr - scrolled) + (i == 0? 0 : ((el.coords.width / 2) / halfWidth) * 100)
         }% 0px`;
       }
       if (i % 2 != 0) {
@@ -315,7 +312,8 @@ import Card from "../components/Card.astro";
           viewHeight - 100
         }px) rotateY(${baseRotate * -1}deg)`;
         (el.node as HTMLElement).style.translate = `${
-          (t - 100) * -1 - centerMlr + scrolled
+          (((t - 100) * -1) - centerMlr + scrolled) - (i == 1 ? 0 : (((el.coords.width / 2) / innerWidth) * 100))//- (i == 0? 0 : ((el.coords.width / 2) / halfWidth) * -100)
+		
         }% 0px`;
       }
     });
