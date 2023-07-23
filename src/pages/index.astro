@@ -55,7 +55,7 @@ import Card from "../components/Card.astro";
         body="Come say hi to our amazing Discord community. ❤️"
       />
     </ul>
-    <!-- <p class="instructions">
+    <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
       />
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
@@ -132,7 +132,7 @@ import Card from "../components/Card.astro";
         title="Community"
         body="Come say hi to our amazing Discord community. ❤️"
       />
-    </ul> -->
+    </ul>
   </main>
 </Layout>
 
@@ -193,13 +193,13 @@ import Card from "../components/Card.astro";
 
   document.body.style.height = `${document.body.scrollHeight}px`;
   const nodes_data: { node: Node; coords: any }[] = [];
+  const totalNodes = document.querySelector("main")?.childNodes.length;
   if (
     document.querySelector("main") &&
     document.querySelector("main")?.hasChildNodes() &&
     true
   ) {
     document.body.style.height = `${document.body.scrollHeight}px`;
-    const totalNodes = document.querySelector("main")?.childNodes.length;
     const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
       (el) => !["#text", "#comment"].some((e) => e == el.nodeName)
     );
@@ -220,9 +220,10 @@ import Card from "../components/Card.astro";
         (el as HTMLElement).style.top = `${
           viewHeight / 2 - coords.height / 2
         }px`;
-        // Common calcs.
+        const centerMlr = (window.innerWidth * 5) / 100;
+
         const per = (coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
-        const scale = (per - 100) * -1;
+        const scale = (per - 100) * -1 - (i * 100) / totalNodes!;
         console.log("per:", per);
         console.log("scale:", scale);
         // y => z // max w. inner / 2.
@@ -230,12 +231,14 @@ import Card from "../components/Card.astro";
         const t =
           i == 0
             ? 0
-            : ((coords.width + coords.y - halfWidth) /
-                window.innerWidth /
-                1.5) *
+            : ((coords.width + coords.y - halfWidth) / window.innerWidth / 2) *
               100;
-        const centerMlr = (window.innerWidth * 5) / 100;
-        const baseRotate = 65 + i * 1;
+        const rotationMlr =
+          (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
+        const isInitialSet = (i / totalNodes!) * 100 <= rotationMlr;
+        const baseRotate = isInitialSet ? 65 : 90;
+        (el as HTMLElement).style.scale = `${scale < 0 ? 0 : scale}%`;
+
         // Left and Right diffs (positive vs negative).
         if (i % 2 == 0) {
           console.log("-T LEFT: ", t);
@@ -243,7 +246,6 @@ import Card from "../components/Card.astro";
           (el as HTMLElement).style.transform = `perspective(${
             viewHeight - 100
           }px) rotateY(${baseRotate}deg)`;
-          (el as HTMLElement).style.scale = `${scale}%`;
           (el as HTMLElement).style.translate = `${t - centerMlr}% 0px`;
         }
 
@@ -254,7 +256,6 @@ import Card from "../components/Card.astro";
           (el as HTMLElement).style.transform = `perspective(${
             viewHeight - 100
           }px) rotateY(${baseRotate * -1}deg)`;
-          (el as HTMLElement).style.scale = `${scale}%`;
           (el as HTMLElement).style.translate = `${
             (t - 100) * -1 - centerMlr
           }% 0px`;
@@ -264,27 +265,57 @@ import Card from "../components/Card.astro";
   }
 
   document.addEventListener("scroll", () => {
-    console.log("o", nodes);
+    // console.log("o", nodes);
     const scrolled = ((window.scrollY / scrollHeight) * 100) | 0.001;
-    console.log("scrolled: ", scrolled);
     nodes_data.forEach((el: any, i: number) => {
       const per = (el.coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
-      const scale = (per - 100) * -1;
+      const scale = (per - 100) * -1 - (i * 100) / totalNodes!;
       const t =
-        i == 0
+        i == 0 // && scrolled > 1
           ? 0
           : ((el.coords.width + el.coords.y - halfWidth) /
               window.innerWidth /
-              1.5) *
+              2) *
             100;
       const centerMlr = (window.innerWidth * 5) / 100;
-      (el.node as HTMLElement).style.scale = `${scale + scrolled}%`;
+
+      const rotationMlr = (i / totalNodes!) * 100;
+	  console.log(rotationMlr)
+      const rotationInitialSet =
+        (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
+      const isInitialSet = rotationMlr <= rotationInitialSet; // fixed threshold.
+	  const marginScrolled = scrolled + 5;
+	  const preBR = marginScrolled > rotationMlr;
+    
+    //   const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
+      const baseRotate = 65;
+	  console.warn("new deg: ", baseRotate);
+	//     const willRotate = scrolled > per;
+    //   console.log(willRotate);
+    //     const baseRotate = !willRotate
+    //       ? 65 + (i / totalNodes!) * 100 < 90
+    //         ? 65 + (i / totalNodes!) * 100
+    //         : 90
+    //       : 65;
+	(el.node as HTMLElement).style.opacity = `${isInitialSet ? 1 : preBR ? 1 : (scrolled / 100) * 0.5}`;
+
+      (el.node as HTMLElement).style.scale = `${
+        scale + scrolled < 0 ? 0 : scale + scrolled
+      }%`;
       if (i % 2 == 0) {
-        (el.node as HTMLElement).style.translate = `${(t - centerMlr) - scrolled}% 0px`;
+        (el.node as HTMLElement).style.transform = `perspective(${
+          viewHeight - 100
+        }px) rotateY(${baseRotate}deg)`;
+        (el.node as HTMLElement).style.translate = `${
+          t - centerMlr - scrolled
+        }% 0px`;
       }
       if (i % 2 != 0) {
+        (el.node as HTMLElement).style.transform = `perspective(${
+          viewHeight - 100
+        }px) rotateY(${baseRotate * -1}deg)`;
         (el.node as HTMLElement).style.translate = `${
-         ( (t - 100) * -1 - centerMlr) + scrolled
+          (t - 100) * -1 - centerMlr + scrolled
         }% 0px`;
       }
     });
