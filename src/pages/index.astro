@@ -89,7 +89,7 @@ import Card from "../components/Card.astro";
       />
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
-    <ul role="list" class="link-card-grid">
+    <!-- <ul role="list" class="link-card-grid"> -->
       <Card
         href="https://docs.astro.build/"
         title="Documentation"
@@ -110,7 +110,7 @@ import Card from "../components/Card.astro";
         title="Community"
         body="Come say hi to our amazing Discord community. ❤️"
       />
-    </ul>
+    <!-- </ul> -->
     <ul role="list" class="link-card-grid">
       <Card
         href="https://docs.astro.build/"
@@ -254,15 +254,12 @@ import Card from "../components/Card.astro";
   afterBg.style.height = "100vh";
   afterBg.style.mixBlendMode = "color-burn";
   afterBg.style.opacity = "0.2";
-  // afterBg.style.zIndex = '1';
   document.body.style.overflowX = "hidden";
   // document.body.after(afterBg);
 
   // setTimeout(() => {
   document.querySelector("main")!;
-  const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
-    (el) => !["#text", "#comment"].some((e) => e == el.nodeName)
-  );
+
   const halfWidth = window.innerWidth / 2;
 
   let scrollHeight = 0;
@@ -275,6 +272,62 @@ import Card from "../components/Card.astro";
   document.body.style.height = `${document.body.scrollHeight}px`;
   const nodes_data: { node: Node; coords: any }[] = [];
   const totalNodes = document.querySelector("main")?.childNodes.length;
+
+  function getNodeMetadata(coords: any, i: number, initial?: boolean) {
+    const persp = (coords.y / scrollHeight) * 100;
+    const scale =
+      (persp - 100) * -1 - ((initial ? i || 1 : 5) * 100) / totalNodes!;
+    const trans = ((coords.width + coords.y - halfWidth) / scrollHeight) * 100;
+    return { persp, scale, trans };
+  }
+
+  function updateNodeRules(el: any, i: number, md: any, scroll?: boolean) {
+    let isInitialSet = ((i || 1) / totalNodes!) * 100 <= rotationMlr && i < 2;
+    let preBR = !scroll ? false : scrolled > rotationMlr;
+
+    if (scroll) {
+      isInitialSet = rotationMlr <= rotationMlr && i < 2;
+      preBR = scrolled > rotationMlr;
+      rotationMlr = ((i || 1) / totalNodes!) * 100;
+      // baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
+    }
+    (el.node as HTMLElement).style.opacity = `${
+      isInitialSet ? 1 : preBR ? 1 : 0
+    }`;
+    (el.node as HTMLElement).style.scale = `${
+      md.scale + scrolled < 0 ? 0 : md.scale + scrolled
+    }%`;
+    (el.node as HTMLElement).style.pointerEvents = `${
+      isInitialSet ? "auto" : preBR ? "auto" : "none"
+    }`;
+    (el.node as HTMLElement).style.zIndex = `${i || 1}`;
+    (el.node as HTMLElement).style.transform = `perspective(${
+      viewHeight - 100
+    }px) rotateY(${i % 2 == 0 ? baseRotate : baseRotate * -1}deg)`;
+    if (i % 2 == 0) setLeftNodeRules(el, md);
+    if (i % 2 != 0) setRightNodeRules(el, md);
+  }
+
+  function setLeftNodeRules(el: any, md: any) {
+    (el.node as HTMLElement).style.translate = `${
+      (md.trans - 100) * 1 -
+      centerMlr -
+      scrolled * 2 +
+      (el.coords.width / 2 / halfWidth) * 100 +
+      (halfWidth / innerWidth) * 100
+    }% 0px`;
+  }
+  function setRightNodeRules(el: any, md: any) {
+    (el.node as HTMLElement).style.translate = `${
+      (md.trans - 100) * -1 -
+      centerMlr +
+      scrolled * 2 +
+      (el.coords.width / 2 / innerWidth) * 100 -
+      (halfWidth / innerWidth) * 100
+    }% 0px`;
+  }
+
+  // SETUP TUNEL #####################################
   if (
     document.querySelector("main") &&
     document.querySelector("main")?.hasChildNodes() &&
@@ -284,126 +337,35 @@ import Card from "../components/Card.astro";
     const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
       (el) => !["#text", "#comment"].some((e) => e == el.nodeName)
     );
-    nodes.forEach((el: any, i: number) => {
-      console.log((el as HTMLElement).getBoundingClientRect());
-      scrollHeight = document.body.scrollHeight;
-      viewHeight = window.innerHeight;
-      scrolled = window.scrollY || 0.001;
+    nodes.forEach((el: any) => {
       const coords = (el as HTMLElement).getBoundingClientRect();
-      const mlr = (scrolled / scrollHeight) * 100;
-      // console.log("[MLR]: ", mlr);
       nodes_data.push({ node: el, coords: coords });
-      setTimeout(() => {
-        // Common styles.
-        (el as HTMLElement).style.transition = "0.3s";
-        // (el as HTMLElement).style.opacity = "1";
-        (el as HTMLElement).style.position = "fixed";
-        (el as HTMLElement).style.top = `${
-          viewHeight / 2 - coords.height / 2
-        }px`;
-        centerMlr = scrollHeight / 100; //(window.innerWidth * 4) / 100;
-        const per = (coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
-        const scale = (per - 100) * -1 - ((i || 1) * 100) / totalNodes!;
-        // console.log("per:", per);
-        // console.log("scale:", scale);
-        // y => z // max w. inner / 2.
-        // left negative. right positive.
-        const t = ((coords.width + coords.y - halfWidth) / scrollHeight) * 100;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    scrollHeight = document.body.scrollHeight;
+    viewHeight = window.innerHeight;
+    scrolled = window.scrollY || 0.001;
+    centerMlr = scrollHeight / 100;
+    rotationMlr = (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
 
-        rotationMlr = (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
-        const isInitialSet =
-          ((i || 1) / totalNodes!) * 100 <= rotationMlr && i < 2;
-        baseRotate = 65; //isInitialSet ? 65 : 90;
-        (el as HTMLElement).style.scale = `${scale < 0 ? 0 : scale}%`;
-        (el as HTMLElement).style.opacity = `${isInitialSet ? 1 : 0}`;
-        (el as HTMLElement).style.pointerEvents = `${
-          isInitialSet ? "auto" : "none"
-        }`;
-
-        // Left and Right diffs (positive vs negative).
-        if (i % 2 == 0) {
-          console.log("-T LEFT: ", t);
-          //   (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
-          (el as HTMLElement).style.zIndex = `${i || 1}`;
-          (el as HTMLElement).style.transform = `perspective(${
-            viewHeight - 100
-          }px) rotateY(${baseRotate}deg)`;
-          (el as HTMLElement).style.translate = `${
-            (t - 100) * 1 -
-            centerMlr -
-            scrolled * 2 +
-            (coords.width / 2 / halfWidth) * 100 +
-            (halfWidth / innerWidth) * 100
-          }% 0px`;
-        }
-
-        if (i % 2 != 0) {
-          console.log("-T RIGHT: ", (t - 100) * -1);
-          (el as HTMLElement).style.zIndex = `${i || 1}`;
-          (el as HTMLElement).style.transform = `perspective(${
-            viewHeight - 100
-          }px) rotateY(${baseRotate * -1}deg)`;
-          (el as HTMLElement).style.translate = `${
-            (t - 100) * -1 -
-            centerMlr +
-            scrolled * 2 +
-            (coords.width / 2 / innerWidth) * 100 -
-            (halfWidth / innerWidth) * 100
-            // ((t - 100) * -1) - centerMlr
-          }% 0px`;
-        }
-      });
+    nodes_data.forEach((el: any, i: number) => {
+      // Common Initial rules.
+      (el.node as HTMLElement).style.transition = "0.3s";
+      (el.node as HTMLElement).style.position = "fixed";
+      (el.node as HTMLElement).style.top = `${
+        viewHeight / 2 - el.coords.height / 2
+      }px`;
+      // Generate Node's Metadata.
+      const md = getNodeMetadata(el.coords, i, true);
+      updateNodeRules(el, i, md);
     });
   }
 
   document.addEventListener("scroll", () => {
     scrolled = ((window.scrollY / scrollHeight) * 100) | 0.001;
     nodes_data.forEach((el: any, i: number) => {
-      const per = (el.coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
-      const scale = (per - 100) * -1 - (5 * 100) / totalNodes!;
-      const t =
-        ((el.coords.width + el.coords.y - halfWidth) / scrollHeight) * 100;
-      const rotationMlr = ((i || 1) / totalNodes!) * 100;
-      const isInitialSet = rotationMlr <= rotationMlr && i < 2;
-      const preBR = scrolled > rotationMlr;
-      // const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
-      baseRotate = 65;
-
-      // TO SMOOTH FADE EFFECT
-      (el.node as HTMLElement).style.opacity = `${
-        isInitialSet ? 1 : preBR ? 1 : 0 //(scrolled / 100) * 0.2
-      }`;
-      (el.node as HTMLElement).style.scale = `${
-        scale + scrolled < 0 ? 0 : scale + scrolled
-      }%`;
-      (el.node as HTMLElement).style.pointerEvents = `${
-        isInitialSet ? "auto" : preBR ? "auto" : "none"
-      }`;
-
-      if (i % 2 == 0) {
-        (el.node as HTMLElement).style.transform = `perspective(${
-          viewHeight - 100
-        }px) rotateY(${baseRotate}deg)`;
-        (el.node as HTMLElement).style.translate = `${
-          (t - 100) * 1 -
-          centerMlr -
-          scrolled * 2 +
-          (el.coords.width / 2 / halfWidth) * 100 +
-          (halfWidth / innerWidth) * 100
-        }% 0px`;
-      }
-      if (i % 2 != 0) {
-        (el.node as HTMLElement).style.transform = `perspective(${
-          viewHeight - 100
-        }px) rotateY(${baseRotate * -1}deg)`;
-        (el.node as HTMLElement).style.translate = `${
-          (t - 100) * -1 -
-          centerMlr +
-          scrolled * 2 +
-          (el.coords.width / 2 / innerWidth) * 100 -
-          (halfWidth / innerWidth) * 100
-        }% 0px`;
-      }
+      const md = getNodeMetadata(el.coords, i);
+      updateNodeRules(el, i, md, true);
     });
   });
 
@@ -415,69 +377,39 @@ import Card from "../components/Card.astro";
     timestamp: -1,
   };
   let nodeHovered = false;
-
-  console.info(nodes_data);
   nodes_data.forEach((el, i) => {
     (el.node as HTMLElement).addEventListener("mouseover", () => {
       if (nodeHovered) return;
-      console.log(lastNodeHover?.index != i);
       if (!(lastNodeHover?.index != i)) return;
       if (
         lastNodeHover &&
-        lastNodeHover.node &&
-        lastNodeHover.index != i &&
         lastNodeHover.timestamp > new Date().getTime() + 1000
       ) {
       }
-      setTimeout(() => {
-        nodeHovered = true;
-        if (lastNodeHover && lastNodeHover.index != i)
-          lastNodeHover = {
-            index: i,
-            node: el.node,
-            coords: (el.node as HTMLElement).style.translate,
-            timestamp: new Date().getTime(),
-          };
-        (
-          el.node as HTMLElement
-        ).style.transform = `perspective(${viewHeight}px) rotateY(${0}deg)`;
-        (el.node as HTMLElement).style.translate = `0px 0px`;
-      }, 0);
+      nodeHovered = true;
+      if (lastNodeHover && lastNodeHover.index != i)
+        lastNodeHover = {
+          index: i,
+          node: el.node,
+          coords: (el.node as HTMLElement).style.translate,
+          timestamp: new Date().getTime(),
+        };
+      (
+        el.node as HTMLElement
+      ).style.transform = `perspective(${viewHeight}px) rotateY(${0}deg)`;
+      (el.node as HTMLElement).style.translate = `0px 0px`;
     });
     (el.node as HTMLElement).addEventListener("mouseleave", async () => {
       if (lastNodeHover && lastNodeHover.timestamp > new Date().getTime() - 500)
         return;
       await new Promise((resolve) => setTimeout(resolve, 500));
-      setTimeout(async () => {
-        const t =
-          ((el.coords.width + el.coords.y - halfWidth) / scrollHeight) * 100;
-        if (i % 2 == 0) {
-          (el.node as HTMLElement).style.transform = `perspective(${
-            viewHeight - 100
-          }px) rotateY(${baseRotate}deg)`;
-          (el.node as HTMLElement).style.translate = `${
-            (t - 100) * 1 -
-            centerMlr -
-            scrolled * 2 +
-            (el.coords.width / 2 / halfWidth) * 100 +
-            (halfWidth / innerWidth) * 100
-          }% 0px`;
-        }
-        if (i % 2 != 0) {
-          (el.node as HTMLElement).style.transform = `perspective(${
-            viewHeight - 100
-          }px) rotateY(${baseRotate * -1}deg)`;
-          (el.node as HTMLElement).style.translate = `${
-            (t - 100) * -1 -
-            centerMlr +
-            scrolled * 2 +
-            (el.coords.width / 2 / innerWidth) * 100 -
-            (halfWidth / innerWidth) * 100
-          }% 0px`;
-        }
-        lastNodeHover = { index: -1, node: null, coords: null, timestamp: -1 };
-        nodeHovered = false;
-      }, 0);
+      (el.node as HTMLElement).style.transform = `perspective(${
+        viewHeight - 100
+      }px) rotateY(${i % 2 == 0 ? baseRotate : baseRotate * -1}deg)`;
+      if (i % 2 == 0) setLeftNodeRules(el, getNodeMetadata(el.coords, i));
+      if (i % 2 != 0) setRightNodeRules(el, getNodeMetadata(el.coords, i));
+      lastNodeHover = { index: -1, node: null, coords: null, timestamp: -1 };
+      nodeHovered = false;
     });
   });
   // }, 0);
