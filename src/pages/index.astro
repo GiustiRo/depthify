@@ -14,8 +14,8 @@ import Card from "../components/Card.astro";
     <ul role="list" class="link-card-grid">
       <Card
         href="https://docs.astro.build/"
-        title="Documentation"
-        body="Learn how Astro works and explore the official API docs."
+        title="01"
+        body="El Tao que puede ser expresado con palabras"
       />
       <Card
         href="https://astro.build/integrations/"
@@ -64,7 +64,7 @@ import Card from "../components/Card.astro";
       <Card
         href="https://docs.astro.build/"
         title="Documentation"
-        body="Learn how Astro works and explore the official API docs."
+        body="Assta"
       />
       <Card
         href="https://astro.build/integrations/"
@@ -133,6 +133,16 @@ import Card from "../components/Card.astro";
         body="Come say hi to our amazing Discord community. ❤️"
       />
     </ul>
+	<!-- <div>
+		<img src="https://unsplash.it/250/250/?random" alt="" />
+
+	</div>
+	<div>
+		<img src="https://unsplash.it/250/250/?random" alt="" />
+
+	</div> -->
+			
+		
   </main>
 </Layout>
 
@@ -181,6 +191,25 @@ import Card from "../components/Card.astro";
   }
 </style>
 <script>
+const afterBg = document.createElement("div");
+afterBg.style.backgroundImage = "url(https://4.bp.blogspot.com/-hbkuNamoPek/Vi_AJwOLDaI/AAAAAAAAAb0/HfHBeoLlkAE/s1600/IMG_4542.JPG)";
+// afterBg.style.backgroundSize = "contain";
+afterBg.style.backgroundPosition = "center";
+afterBg.style.backgroundRepeat = "no-repeat";
+afterBg.style.position = "fixed";
+afterBg.style.top = "-10vh";
+afterBg.style.left = "2vw";
+afterBg.style.content = " ";
+afterBg.style.width = '100vw';
+afterBg.style.height = '100vh';
+afterBg.style.mixBlendMode = 'color-burn';
+afterBg.style.opacity = '0.2';
+// afterBg.style.zIndex = '1';
+document.body.style.overflowX = "hidden";
+// document.body.after(afterBg);
+
+setTimeout(() => {
+
   document.querySelector("main")!;
   const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
     (el) => !["#text", "#comment"].some((e) => e == el.nodeName)
@@ -244,7 +273,8 @@ import Card from "../components/Card.astro";
         // Left and Right diffs (positive vs negative).
         if (i % 2 == 0) {
           console.log("-T LEFT: ", t);
-          (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
+        //   (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
+          (el as HTMLElement).style.zIndex = `${i || 1}`;
           (el as HTMLElement).style.transform = `perspective(${
             viewHeight - 100
           }px) rotateY(${baseRotate}deg)`;
@@ -253,7 +283,8 @@ import Card from "../components/Card.astro";
 
         if (i % 2 != 0) {
           console.log("-T RIGHT: ", (t - 100) * -1);
-          (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
+        //   (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
+		(el as HTMLElement).style.zIndex = `${i || 1}`;
 
           (el as HTMLElement).style.transform = `perspective(${
             viewHeight - 100
@@ -287,13 +318,14 @@ import Card from "../components/Card.astro";
         (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
       const isInitialSet = rotationMlr <= rotationInitialSet; // fixed threshold.
       const marginScrolled = scrolled + 5;
-      const preBR = marginScrolled > rotationMlr;
+      const preBR = marginScrolled - 10 > rotationMlr;
 
       //   const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
       const baseRotate = 65;
       console.warn("new deg: ", baseRotate);
+	  // TO SMOOTH FADE EFFECT
       (el.node as HTMLElement).style.opacity = `${
-        isInitialSet ? 1 : preBR ? 1 : (scrolled / 100) * 0.5
+        isInitialSet ? 1 : preBR ? 1 : 0//(scrolled / 100) * 0.2
       }`;
 
       (el.node as HTMLElement).style.scale = `${
@@ -318,4 +350,6 @@ import Card from "../components/Card.astro";
       }
     });
   });
+},3000)
+
 </script>
