@@ -133,7 +133,58 @@ import Card from "../components/Card.astro";
         body="Come say hi to our amazing Discord community. ❤️"
       />
     </ul>
-	<!-- <div>
+
+    <h1>This is section <span class="text-gradient">2</span></h1>
+    <p class="instructions">
+      To get started, open the directory <code>src/pages</code> in your project.<br
+      />
+      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
+    </p>
+    <ul role="list" class="link-card-grid">
+      <Card
+        href="https://docs.astro.build/"
+        title="Documentation"
+        body="Learn how Astro works and explore the official API docs."
+      />
+      <Card
+        href="https://astro.build/integrations/"
+        title="Integrations"
+        body="Supercharge your project with new frameworks and libraries."
+      />
+      <Card
+        href="https://astro.build/themes/"
+        title="Themes"
+        body="Explore a galaxy of community-built starter themes."
+      />
+      <Card
+        href="https://astro.build/chat/"
+        title="Community"
+        body="Come say hi to our amazing Discord community. ❤️"
+      />
+    </ul>
+    <ul role="list" class="link-card-grid">
+      <Card
+        href="https://docs.astro.build/"
+        title="Documentation"
+        body="Learn how Astro works and explore the official API docs."
+      />
+      <Card
+        href="https://astro.build/integrations/"
+        title="Integrations"
+        body="Supercharge your project with new frameworks and libraries."
+      />
+      <Card
+        href="https://astro.build/themes/"
+        title="Themes"
+        body="Explore a galaxy of community-built starter themes."
+      />
+      <Card
+        href="https://astro.build/chat/"
+        title="Community"
+        body="Come say hi to our amazing Discord community. ❤️"
+      />
+    </ul>
+    <!-- <div>
 		<img src="https://unsplash.it/250/250/?random" alt="" />
 
 	</div>
@@ -141,8 +192,6 @@ import Card from "../components/Card.astro";
 		<img src="https://unsplash.it/250/250/?random" alt="" />
 
 	</div> -->
-			
-		
   </main>
 </Layout>
 
@@ -191,165 +240,159 @@ import Card from "../components/Card.astro";
   }
 </style>
 <script>
-const afterBg = document.createElement("div");
-afterBg.style.backgroundImage = "url(https://4.bp.blogspot.com/-hbkuNamoPek/Vi_AJwOLDaI/AAAAAAAAAb0/HfHBeoLlkAE/s1600/IMG_4542.JPG)";
-// afterBg.style.backgroundSize = "contain";
-afterBg.style.backgroundPosition = "center";
-afterBg.style.backgroundRepeat = "no-repeat";
-afterBg.style.position = "fixed";
-afterBg.style.top = "-10vh";
-afterBg.style.left = "2vw";
-afterBg.style.content = " ";
-afterBg.style.width = '100vw';
-afterBg.style.height = '100vh';
-afterBg.style.mixBlendMode = 'color-burn';
-afterBg.style.opacity = '0.2';
-// afterBg.style.zIndex = '1';
-document.body.style.overflowX = "hidden";
-// document.body.after(afterBg);
+  const afterBg = document.createElement("div");
+  afterBg.style.backgroundImage =
+    "url(https://4.bp.blogspot.com/-hbkuNamoPek/Vi_AJwOLDaI/AAAAAAAAAb0/HfHBeoLlkAE/s1600/IMG_4542.JPG)";
+  // afterBg.style.backgroundSize = "contain";
+  afterBg.style.backgroundPosition = "center";
+  afterBg.style.backgroundRepeat = "no-repeat";
+  afterBg.style.position = "fixed";
+  afterBg.style.top = "-10vh";
+  afterBg.style.left = "2vw";
+  afterBg.style.content = " ";
+  afterBg.style.width = "100vw";
+  afterBg.style.height = "100vh";
+  afterBg.style.mixBlendMode = "color-burn";
+  afterBg.style.opacity = "0.2";
+  // afterBg.style.zIndex = '1';
+  document.body.style.overflowX = "hidden";
+  // document.body.after(afterBg);
 
-setTimeout(() => {
-
-  document.querySelector("main")!;
-  const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
-    (el) => !["#text", "#comment"].some((e) => e == el.nodeName)
-  );
-  const halfWidth = window.innerWidth / 2;
-
-  let scrollHeight = 0;
-  let viewHeight = 0;
-  let scrolled = 0.001;
-
-  document.body.style.height = `${document.body.scrollHeight}px`;
-  const nodes_data: { node: Node; coords: any }[] = [];
-  const totalNodes = document.querySelector("main")?.childNodes.length;
-  if (
-    document.querySelector("main") &&
-    document.querySelector("main")?.hasChildNodes() &&
-    true
-  ) {
-    document.body.style.height = `${document.body.scrollHeight}px`;
+  setTimeout(() => {
+    document.querySelector("main")!;
     const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
       (el) => !["#text", "#comment"].some((e) => e == el.nodeName)
     );
-    nodes.forEach((el: any, i: number) => {
-      console.log((el as HTMLElement).getBoundingClientRect());
-      scrollHeight = document.body.scrollHeight;
-      viewHeight = window.innerHeight;
-      scrolled = window.scrollY || 0.001;
-      const coords = (el as HTMLElement).getBoundingClientRect();
-      const mlr = (scrolled / scrollHeight) * 100;
-      console.log("[MLR]: ", mlr);
-      nodes_data.push({ node: el, coords: coords });
-      setTimeout(() => {
-        // Common styles.
-        (el as HTMLElement).style.transition = "0.3s";
-        // (el as HTMLElement).style.opacity = "1";
-        (el as HTMLElement).style.position = "fixed";
-        (el as HTMLElement).style.top = `${
-          viewHeight / 2 - coords.height / 2
-        }px`;
+    const halfWidth = window.innerWidth / 2;
 
-        const centerMlr = (window.innerWidth * 4) / 100;
+    let scrollHeight = 0;
+    let viewHeight = 0;
+    let scrolled = 0.001;
 
-        const per = (coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
-        const scale = (per - 100) * -1 - (i * 100) / totalNodes!;
-        console.log("per:", per);
-        console.log("scale:", scale);
-        // y => z // max w. inner / 2.
-        // left negative. right positive.
+    document.body.style.height = `${document.body.scrollHeight}px`;
+    const nodes_data: { node: Node; coords: any }[] = [];
+    const totalNodes = document.querySelector("main")?.childNodes.length;
+    if (
+      document.querySelector("main") &&
+      document.querySelector("main")?.hasChildNodes() &&
+      true
+    ) {
+      document.body.style.height = `${document.body.scrollHeight}px`;
+      const nodes = Array.from(
+        document.querySelector("main")!.childNodes
+      ).filter((el) => !["#text", "#comment"].some((e) => e == el.nodeName));
+      nodes.forEach((el: any, i: number) => {
+        console.log((el as HTMLElement).getBoundingClientRect());
+        scrollHeight = document.body.scrollHeight;
+        viewHeight = window.innerHeight;
+        scrolled = window.scrollY || 0.001;
+        const coords = (el as HTMLElement).getBoundingClientRect();
+        const mlr = (scrolled / scrollHeight) * 100;
+        console.log("[MLR]: ", mlr);
+        nodes_data.push({ node: el, coords: coords });
+        setTimeout(() => {
+          // Common styles.
+          (el as HTMLElement).style.transition = "0.3s";
+          // (el as HTMLElement).style.opacity = "1";
+          (el as HTMLElement).style.position = "fixed";
+          (el as HTMLElement).style.top = `${
+            viewHeight / 2 - coords.height / 2
+          }px`;
+
+          const centerMlr = (scrollHeight) / 100;//(window.innerWidth * 4) / 100;
+
+          const per = (coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
+          const scale =( (per - 100) * -1) - ((i||1) * 100) / totalNodes!;
+          console.log("per:", per);
+          console.log("scale:", scale);
+          // y => z // max w. inner / 2.
+          // left negative. right positive.
+          const t = ((coords.width + coords.y - halfWidth) / scrollHeight) * 100;
+                
+          const rotationMlr =
+            (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
+          const isInitialSet = ((i||1) / totalNodes!) * 100 <= rotationMlr && i<2;
+          const baseRotate = 65; //isInitialSet ? 65 : 90;
+          (el as HTMLElement).style.scale = `${scale < 0 ? 0 : scale}%`;
+          (el as HTMLElement).style.opacity = `${isInitialSet ? 1 : 0}`;
+
+          // Left and Right diffs (positive vs negative).
+          if (i % 2 == 0) {
+            console.log("-T LEFT: ", t);
+            //   (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
+            (el as HTMLElement).style.zIndex = `${i || 1}`;
+            (el as HTMLElement).style.transform = `perspective(${
+              viewHeight - 100
+            }px) rotateY(${baseRotate}deg)`;
+            (el as HTMLElement).style.translate = `${
+              ((((t - 100) * 1) - centerMlr) - (scrolled*2)) + (((coords.width / 2) / halfWidth) * 100)
+
+            }% 0px`;
+          }
+
+          if (i % 2 != 0) {
+            console.log("-T RIGHT: ", (t - 100) * -1);
+            (el as HTMLElement).style.zIndex = `${i || 1}`;
+            (el as HTMLElement).style.transform = `perspective(${
+              viewHeight - 100
+            }px) rotateY(${baseRotate * -1}deg)`;
+            (el as HTMLElement).style.translate = `${
+              (((t - 100) * -1) - centerMlr) + (scrolled*2) +
+            (((coords.width / 2) / innerWidth) * 100)
+              // ((t - 100) * -1) - centerMlr
+            }% 0px`;
+          }
+        });
+      });
+    }
+
+    document.addEventListener("scroll", () => {
+      // console.log("o", nodes);
+      scrolled = ((window.scrollY / scrollHeight) * 100) | 0.001;
+      nodes_data.forEach((el: any, i: number) => {
+        const per = (el.coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
+        const scale = (per - 100) * -1 - ((i||1) * 100) / totalNodes!;
         const t =
-          i == 0
-            ? 0
-            : ((coords.width + coords.y - halfWidth) / window.innerWidth / 2) *
-              100;
-        const rotationMlr =
-          (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
-        const isInitialSet = (i / totalNodes!) * 100 <= rotationMlr;
-        const baseRotate = 65; //isInitialSet ? 65 : 90;
-        (el as HTMLElement).style.scale = `${scale < 0 ? 0 : scale}%`;
-        (el as HTMLElement).style.opacity = `${isInitialSet ? 1 : 0}`;
+          ((el.coords.width + el.coords.y - halfWidth) / (scrollHeight)) * 100;
+        const centerMlr = (scrollHeight) / 100;
 
-        // Left and Right diffs (positive vs negative).
+        const rotationMlr = ((i||1) / totalNodes!) * 100;
+        console.log(rotationMlr);
+        const rotationInitialSet =
+          (scrollHeight / totalNodes! / window.innerWidth) * 100 ; // % INITIAL AMOUNT ELEMENTS
+        const isInitialSet = rotationMlr <= rotationInitialSet && i<2; // fixed threshold.
+        const marginScrolled = scrolled + 5;
+        const preBR = marginScrolled - 1 > rotationMlr;
+
+        //   const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
+        const baseRotate = 65;
+        console.warn("new deg: ", baseRotate);
+        // TO SMOOTH FADE EFFECT
+        (el.node as HTMLElement).style.opacity = `${
+          isInitialSet ? 1 : preBR ? 1 : 0 //(scrolled / 100) * 0.2
+        }`;
+
+        (el.node as HTMLElement).style.scale = `${
+          scale + scrolled < 0 ? 0 : scale + scrolled
+        }%`;
         if (i % 2 == 0) {
-          console.log("-T LEFT: ", t);
-        //   (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
-          (el as HTMLElement).style.zIndex = `${i || 1}`;
-          (el as HTMLElement).style.transform = `perspective(${
+          (el.node as HTMLElement).style.transform = `perspective(${
             viewHeight - 100
           }px) rotateY(${baseRotate}deg)`;
-          (el as HTMLElement).style.translate = `${t - centerMlr}% 0px`;
+          (el.node as HTMLElement).style.translate = `${
+            ((((t - 100) * 1) - centerMlr) - (scrolled*2)) + (((el.coords.width / 2) / halfWidth) * 100)
+          }% 0px`;
         }
-
         if (i % 2 != 0) {
-          console.log("-T RIGHT: ", (t - 100) * -1);
-        //   (el as HTMLElement).style.zIndex = `${totalNodes! - i}`;
-		(el as HTMLElement).style.zIndex = `${i || 1}`;
-
-          (el as HTMLElement).style.transform = `perspective(${
+          (el.node as HTMLElement).style.transform = `perspective(${
             viewHeight - 100
           }px) rotateY(${baseRotate * -1}deg)`;
-          (el as HTMLElement).style.translate = `${
-            (t - 100) * -1 - centerMlr
+          (el.node as HTMLElement).style.translate = `${
+            (((t - 100) * -1) - centerMlr) + (scrolled*2) +
+            (((el.coords.width / 2) / innerWidth) * 100) //- (i == 0? 0 : ((el.coords.width / 2) / halfWidth) * -100)
           }% 0px`;
         }
       });
     });
-  }
-
-  document.addEventListener("scroll", () => {
-    // console.log("o", nodes);
-    const scrolled = ((window.scrollY / scrollHeight) * 100) | 0.001;
-    nodes_data.forEach((el: any, i: number) => {
-      const per = (el.coords.y / scrollHeight) * 100; //* (window.innerWidth / 4)) / 100;
-      const scale = (per - 100) * -1 - (i * 100) / totalNodes!;
-      const t =
-        i == 0 // && scrolled > 1
-          ? 0
-          : ((el.coords.width + el.coords.y - halfWidth) /
-              window.innerWidth /
-              2) *
-            100;
-      const centerMlr = (window.innerWidth * 4) / 100;
-
-      const rotationMlr = (i / totalNodes!) * 100;
-      console.log(rotationMlr);
-      const rotationInitialSet =
-        (scrollHeight / totalNodes! / window.innerWidth) * 100; // % INITIAL AMOUNT ELEMENTS
-      const isInitialSet = rotationMlr <= rotationInitialSet; // fixed threshold.
-      const marginScrolled = scrolled + 5;
-      const preBR = marginScrolled - 10 > rotationMlr;
-
-      //   const baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
-      const baseRotate = 65;
-      console.warn("new deg: ", baseRotate);
-	  // TO SMOOTH FADE EFFECT
-      (el.node as HTMLElement).style.opacity = `${
-        isInitialSet ? 1 : preBR ? 1 : 0//(scrolled / 100) * 0.2
-      }`;
-
-      (el.node as HTMLElement).style.scale = `${
-        scale + scrolled < 0 ? 0 : scale + scrolled
-      }%`;
-      if (i % 2 == 0) {
-        (el.node as HTMLElement).style.transform = `perspective(${
-          viewHeight - 100
-        }px) rotateY(${baseRotate}deg)`;
-        (el.node as HTMLElement).style.translate = `${
-          (t - centerMlr - scrolled) + (i == 0? 0 : ((el.coords.width / 2) / halfWidth) * 100)
-        }% 0px`;
-      }
-      if (i % 2 != 0) {
-        (el.node as HTMLElement).style.transform = `perspective(${
-          viewHeight - 100
-        }px) rotateY(${baseRotate * -1}deg)`;
-        (el.node as HTMLElement).style.translate = `${
-          (((t - 100) * -1) - centerMlr + scrolled) - (i == 1 ? 0 : (((el.coords.width / 2) / innerWidth) * 100))//- (i == 0? 0 : ((el.coords.width / 2) / halfWidth) * -100)
-		
-        }% 0px`;
-      }
-    });
-  });
-},3000)
-
+  }, 0);
 </script>
