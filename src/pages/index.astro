@@ -316,6 +316,9 @@ import Card from "../components/Card.astro";
         const baseRotate = 65; //isInitialSet ? 65 : 90;
         (el as HTMLElement).style.scale = `${scale < 0 ? 0 : scale}%`;
         (el as HTMLElement).style.opacity = `${isInitialSet ? 1 : 0}`;
+        (el as HTMLElement).style.pointerEvents = `${
+          isInitialSet ? "auto" : "none"
+        }`;
 
         // Left and Right diffs (positive vs negative).
         if (i % 2 == 0) {
@@ -381,6 +384,10 @@ import Card from "../components/Card.astro";
       (el.node as HTMLElement).style.scale = `${
         scale + scrolled < 0 ? 0 : scale + scrolled
       }%`;
+      (el.node as HTMLElement).style.pointerEvents = `${
+        isInitialSet ? "auto" : preBR ? "auto" : "none"
+      }`;
+
       if (i % 2 == 0) {
         (el.node as HTMLElement).style.transform = `perspective(${
           viewHeight - 100
@@ -407,40 +414,52 @@ import Card from "../components/Card.astro";
       }
     });
   });
-  let lastNodeHover: { index: number; node: any; coords: any, timestamp: number } = {
+  let lastNodeHover: { index: any; node: any; coords: any; timestamp: any } = {
     index: -1,
     node: null,
     coords: null,
-    timestamp: -1
+    timestamp: -1,
   };
-  
+
   console.info(nodes_data);
   nodes_data.forEach((el, i) => {
     (el.node as HTMLElement).addEventListener("mouseover", () => {
+      // if(lastNodeHover && lastNodeHover.index == i && lastNodeHover.timestamp + 300 > new Date().getTime()) return;
+      if (
+        lastNodeHover &&
+        lastNodeHover.node &&
+        lastNodeHover.index != i &&
+        lastNodeHover.timestamp > new Date().getTime() + 1000
+      ) {
+        // lastNodeHover.node.style.transform = `perspective(${
+        //   viewHeight - 100
+        // }px) rotateY(${i %2 == 0 ? 65 : -65}deg)`;
+        // lastNodeHover.node.style.translate = `${lastNodeHover.coords}`;
+      }
       setTimeout(() => {
         if (lastNodeHover && lastNodeHover.index != i)
           lastNodeHover = {
             index: i,
             node: el.node,
             coords: (el.node as HTMLElement).style.translate,
-            timestamp: new Date().getTime()
+            timestamp: new Date().getTime(),
           };
         (
           el.node as HTMLElement
         ).style.transform = `perspective(${viewHeight}px) rotateY(${0}deg)`;
         (el.node as HTMLElement).style.translate = `0px 0px`;
-      },0);
+      }, 0);
     });
     (el.node as HTMLElement).addEventListener("mouseleave", () => {
-      if(lastNodeHover && lastNodeHover.timestamp > new Date().getTime() - 1000) return;
+      if (lastNodeHover && lastNodeHover.timestamp > new Date().getTime() - 500)
+        return;
       setTimeout(() => {
-        
-        console.log(lastNodeHover);
         (el.node as HTMLElement).style.transform = `perspective(${
           viewHeight - 100
-        }px) rotateY(${i %2 == 0 ? 65 : -65}deg)`;
+        }px) rotateY(${i % 2 == 0 ? 65 : -65}deg)`;
         (el.node as HTMLElement).style.translate = `${lastNodeHover.coords}`;
-      }, 300);
+        lastNodeHover = { index: -1, node: null, coords: null, timestamp: -1 };
+      }, 0);
     });
   });
   // }, 0);
