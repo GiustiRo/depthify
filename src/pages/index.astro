@@ -5,8 +5,8 @@ import Card from "../components/Card.astro";
 
 <Layout title="Welcome to Astro.">
   <main>
-    <h1>Astro JS <span class="text-gradient">Meets</span></h1>
-    <h1>Tao Te <span class="text-gradient">King</span></h1>
+    <h1>Astro js Meets</h1>
+    <h1> <span class="text-gradient">Tao Te King</span></h1>
     <!-- <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
       />
@@ -316,6 +316,7 @@ import Card from "../components/Card.astro";
     font-size: 3rem;
     font-weight: 800;
     margin: 0;
+    text-align: center;
   }
   .text-gradient {
     background-image: var(--accent-gradient);
@@ -448,11 +449,13 @@ import Card from "../components/Card.astro";
     }vw 0px`;
   }
 
+  const APPLY_EFFECTS = !false;
+
   // SETUP TUNEL #####################################
   if (
     document.querySelector("main") &&
     document.querySelector("main")?.hasChildNodes() &&
-    true
+    APPLY_EFFECTS
   ) {
     document.body.style.height = `${document.body.scrollHeight}px`;
     const nodes = Array.from(document.querySelector("main")!.childNodes).filter(
