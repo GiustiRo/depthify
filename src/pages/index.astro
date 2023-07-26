@@ -11,50 +11,51 @@ import Card from "../components/Card.astro";
       />
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
-    <ul role="list" class="link-card-grid">
+    
+    <!-- <ul role="list" class="link-card-grid"> -->
       <Card
         href="https://docs.astro.build/"
         title="01"
-        body="El Tao que puede ser expresado con palabras"
+        body="El Tao que puede ser expresado no es el verdadero Tao. El nombre que se le puede dar no es su verdadero nombre. Sin nombre es el principio del universo; y con nombre, es la madre de todas las cosas. Desde el no-ser comprendemos su esencia; y desde el ser, sólo vemos su apariencia. Ambas cosas, ser y no-ser, tienen el mismo origen, aunque distinto nombre. Su identidad es el misterio. Y en este misterio Se halla la puerta de toda maravilla."
       />
       <Card
         href="https://astro.build/integrations/"
-        title="Integrations"
-        body="Supercharge your project with new frameworks and libraries."
+        title="02"
+        body="Todo el mundo toma lo bello por lo bello, y por eso conocemos qué es lo feo. Todo el mundo toma el bien por el bien, y por eso conocen qué es el mal. Porque, el ser y el no-ser se engendran mutuamente. Lo fácil y lo difícil se complementan. Lo largo y lo corto se forman el uno de otro. Lo alto y lo bajo se aproximan. El sonido y el tono armonizan entre sí. El antes y el después se suceden recíprocamente. Por eso, el sabio adopta la actitud de no-obrar y practica sin palabras. Todas las cosas aparecen sin su intervención. Nada usurpa ni nada rehúsa, ni se atribuye la obra acabada, y por eso, su obra permanece con él"
       />
       <Card
         href="https://astro.build/themes/"
-        title="Themes"
-        body="Explore a galaxy of community-built starter themes."
+        title="03"
+        body="No ensalzar los talentos para que el pueblo no compita. No estimar lo que es difícil de adquirir para que el pueblo no se haga ladrón. No mostrar lo codiciable para que su corazón no se ofusque. El sabio gobierna de modo que vacía el corazón, llena el vientre, debilita la ambición, y fortalece los huesos. Así evita que el pueblo tenga saber ni deseos, para que los más astutos no busquen su triunfo. Quién practica el no-obrar todo lo gobierna."
       />
       <Card
         href="https://astro.build/chat/"
-        title="Community"
-        body="Come say hi to our amazing Discord community. ❤️"
+        title="04"
+        body="El Tao es vacío, imposible de colmar, y por eso, inagotable en su acción. En su profundidad reside el origen de todas las cosas. Suaviza sus asperezas, disuelve la confusión, atempera su esplendor, y se identifica con el polvo. Por su profundidad parece ser eterno. No sé quién lo concibió, pero es más antiguo que los dioses."
       />
-    </ul>
-    <ul role="list" class="link-card-grid">
+    <!-- </ul> -->
+    <!-- <ul role="list" class="link-card-grid"> -->
       <Card
         href="https://docs.astro.build/"
-        title="Documentation"
-        body="Learn how Astro works and explore the official API docs."
+        title="05"
+        body="El universo no tiene sentimientos; todas las cosas son para él como perros de paja. El sabio no tiene sentimientos; el pueblo es para él como un perro de paja. El universo es como un fuelle, vacío, pero nunca agotado. Cuanto más se mueve, más produce. Quien más habla menos le comprende Es mejor incluirse en él."
       />
       <Card
         href="https://astro.build/integrations/"
-        title="Integrations"
-        body="Supercharge your project with new frameworks and libraries."
+        title="06"
+        body="El espíritu del valle no muere. Es la hembra misteriosa. La puerta de lo misterioso femenino es la raíz del universo. Ininterrumpidamente, prosigue su obra sin fatiga"
       />
       <Card
         href="https://astro.build/themes/"
-        title="Themes"
-        body="Explore a galaxy of community-built starter themes."
+        title="07"
+        body="El cielo es eterno y la tierra permanece. El cielo y la tierra deben su eterna duración a que no hacen de sí mismos la razón de su existencia. Por ello son eternos. El sabio se mantiene rezagado y así es antepuesto. Excluye su persona y su persona se conserva. Porque es desinteresado obtiene su propio bien."
       />
       <Card
         href="https://astro.build/chat/"
-        title="Community"
-        body="Come say hi to our amazing Discord community. ❤️"
+        title="08"
+        body="La suprema bondad es como el agua. El agua todo lo favorece y a nada combate. Se mantiene en los lugares que más desprecia el hombre y, así, está muy cerca del Tao. Por esto, la suprema bondad es tal que, su lugar es adecuado. Su corazón es profundo. Su espíritu es generoso. Su palabra es veraz. Su gobierno es justo. Su trabajo es perfecto. Su acción es oportuna. Y no combatiendo con nadie, nada se le reprocha."
       />
-    </ul>
+    <!-- </ul> -->
     <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
       />
@@ -267,7 +268,7 @@ import Card from "../components/Card.astro";
   let scrolled = 0.001;
   let rotationMlr = 0;
   let centerMlr = scrollHeight / 100;
-  let baseRotate = 65;
+  let baseRotate = 55;
 
   document.body.style.height = `${document.body.scrollHeight}px`;
   const nodes_data: { node: Node; coords: any }[] = [];
@@ -277,7 +278,7 @@ import Card from "../components/Card.astro";
     const persp = (coords.y / scrollHeight) * 100;
     const scale =
       (persp - 100) * -1 - ((initial ? i || 1 : 5) * 100) / totalNodes!;
-    const trans = ((coords.width + coords.y - halfWidth) / scrollHeight) * 100;
+    const trans = (((coords.width + coords.y * 1) - halfWidth) / scrollHeight) * 100;
     return { persp, scale, trans };
   }
 
@@ -285,17 +286,17 @@ import Card from "../components/Card.astro";
     let isInitialSet = ((i || 1) / totalNodes!) * 100 <= rotationMlr && i < 2;
     let preBR = !scroll ? false : scrolled > rotationMlr;
 
-    if (scroll) {
+    // if (scroll) {
+      rotationMlr = ((i || 1) / totalNodes!) * 100;
       isInitialSet = rotationMlr <= rotationMlr && i < 2;
       preBR = scrolled > rotationMlr;
-      rotationMlr = ((i || 1) / totalNodes!) * 100;
       // baseRotate = isInitialSet ? 65 : preBR ? 90 - (marginScrolled - rotationMlr + 10) > 65 ? 90 - (marginScrolled - rotationMlr + 10) : 65: 90
-    }
+    // }
     (el.node as HTMLElement).style.opacity = `${
       isInitialSet ? 1 : preBR ? 1 : 0
     }`;
     (el.node as HTMLElement).style.scale = `${
-      md.scale + scrolled < 0 ? 0 : md.scale + scrolled
+       md.scale + (scrolled * 2)
     }%`;
     (el.node as HTMLElement).style.pointerEvents = `${
       isInitialSet ? "auto" : preBR ? "auto" : "none"
@@ -310,21 +311,21 @@ import Card from "../components/Card.astro";
 
   function setLeftNodeRules(el: any, md: any) {
     (el.node as HTMLElement).style.translate = `${
-      (md.trans - 100) * 1 -
-      centerMlr -
-      scrolled * 2 +
-      (el.coords.width / 2 / halfWidth) * 100 +
-      (halfWidth / innerWidth) * 100
-    }% 0px`;
+      (((md.trans - 100) * -1) -
+      centerMlr +
+      (scrolled * 2)  +
+      ((el.coords.width / 2) / (innerWidth)) * 100 -
+      (halfWidth / innerWidth) * 100) * -1
+    }vw 0px`;
   }
   function setRightNodeRules(el: any, md: any) {
     (el.node as HTMLElement).style.translate = `${
-      (md.trans - 100) * -1 -
+      (((md.trans - 100) * -1) -
       centerMlr +
-      scrolled * 2 +
-      (el.coords.width / 2 / innerWidth) * 100 -
-      (halfWidth / innerWidth) * 100
-    }% 0px`;
+      (scrolled * 2)  +
+      ((el.coords.width / 2) / innerWidth) * 100 -
+      (halfWidth / innerWidth) * 100) * 1
+    }vw 0px`;
   }
 
   // SETUP TUNEL #####################################
